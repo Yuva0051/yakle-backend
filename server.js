@@ -71,8 +71,8 @@ app.post("/save-selection", async (req, res) => {
             return res.status(400).json({ error: "User has already deposited" });
         }
         jsonData.deposits.push({ phone, name, depositAmount, time: new Date().toISOString(), type });
-    } 
-    else if (type === "selection") {
+
+    } else if (type === "selection") {
         if (jsonData.selections.some(s => s.phone === phone)) {
             return res.status(400).json({ error: "User has already selected an option" });
         }
@@ -81,8 +81,8 @@ app.post("/save-selection", async (req, res) => {
 
         if (choice === "A") jsonData.totalA += depositAmount;
         else if (choice === "B") jsonData.totalB += depositAmount;
-    } 
-    else {
+
+    } else {
         return res.status(400).json({ error: "Invalid type" });
     }
 
@@ -100,5 +100,4 @@ app.get("/total-deposits", async (req, res) => {
 initializeData().then(() => {
     app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
 });
-
 

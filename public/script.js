@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     function fetchTotalDeposits() {
-        fetch("https://yakle-backend3.onrender.com/total-deposits")
+        fetch("/total-deposits")
             .then(response => response.json())
             .then(data => {
                 if (totalDepositA) totalDepositA.innerText = data.totalA;
@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
         let hours = ISTTime.getUTCHours();
 
         if (hours >= 20 && hours <= 23) {
-            fetch("https://yakle-backend3.onrender.com/total-deposits")
+            fetch("/total-deposits")
                 .then(response => response.json())
                 .then(data => {
                     let winner = data.totalA < data.totalB ? "A" : "B";
@@ -166,7 +166,7 @@ document.addEventListener("DOMContentLoaded", function () {
             balanceAmount.innerText = newBalance;
             localStorage.setItem("balance", newBalance);
 
-            fetch('https://yakle-backend3.onrender.com/save-selection', {
+            fetch('/save-selection', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -189,6 +189,7 @@ document.addEventListener("DOMContentLoaded", function () {
         alert(message);
     }
 });
+
 // Money Rain Effect
 function createMoneyRain() {
     const money = document.createElement("div");
