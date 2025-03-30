@@ -1,64 +1,58 @@
 const express = require("express");
-const cors = require("cors");
-const fs = require("fs").promises;  
+const fs = require("fs");
 const path = require("path");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-const backendDir = __dirname;
+// Define the backend directory dynamically
+const backendDir = __dirname;  // This works on Render (Linux)
 const dataFilePath = path.join(backendDir, "data.json");
 
-app.use(cors());  // Enable CORS for frontend API calls
+// Middleware to parse JSON
 app.use(express.json());
-app.use(express.static(path.join(backendDir, "public")));  // Serve static files from public folder
+app.use(express.static(path.join(backendDir, "public")));
 
-// Initialize data if not available
-const initializeData = async () => {
-    try {
-        await fs.access(dataFilePath);
-        const data = await fs.readFile(dataFilePath, "utf8");
-        JSON.parse(data); // to check if the data is valid
-    } catch {
-        const defaultData = { deposits: [], selections: [], totalA: 0, totalB: 0 };
-        await fs.writeFile(dataFilePath, JSON.stringify(defaultData, null, 2));  // Create default data file if it doesn't exist
-    }
-};
+// Ensure `data.json` exists
+if (!fs.existsSync(dataFilePath)) {
+    fs.writeFileSync(
+        dataFilePath,
+        JSON.stringify({ deposits: [], selections: [], totalA: 0, totalB: 0 }, null, 2)
+    );
+}
 
-// Load the data from data.json
-const loadData = async () => {
+// Load JSON data safely
+const loadData = () => {
     try {
-        const data = await fs.readFile(dataFilePath, "utf8");
-        return JSON.parse(data);
+        return JSON.parse(fs.readFileSync(dataFilePath, "utf8"));
     } catch (error) {
         console.error("Error reading data.json:", error);
         return { deposits: [], selections: [], totalA: 0, totalB: 0 };
     }
 };
 
-// Save the updated data to data.json
-const saveData = async (jsonData) => {
+// Save JSON data safely
+const saveData = (jsonData) => {
     try {
-        await fs.writeFile(dataFilePath, JSON.stringify(jsonData, null, 2));
+        fs.writeFileSync(dataFilePath, JSON.stringify(jsonData, null, 2));
     } catch (error) {
         console.error("Error writing to data.json:", error);
     }
 };
 
-// Route to get the data (deposits, selections, totalA, totalB)
-app.get("/data", async (req, res) => {
-    const jsonData = await loadData();
-    res.json(jsonData);
+// Get all data (GET /data)
+app.get("/data", (req, res) => {
+    res.json(loadData());
 });
 
-// Route to save selection or deposit data
-app.post("/save-selection", async (req, res) => {
-    let jsonData = await loadData();
-
-    if (!jsonData.deposits || !Array.isArray(jsonData.deposits)) jsonData.deposits = [];
-    if (!jsonData.selections || !Array.isArray(jsonData.selections)) jsonData.selections = [];
-    if (jsonData.totalA === undefined) jsonData.totalA = 0;
-    if (jsonData.totalB === undefined) jsonData.totalB = 0;
+// Save deposit or selection (POST /save-selection)
+app.post("/save-selection", (req, res) => {
+    let jsonData = loadData();
+    
+    if (!jsonData.deposits) jsonData.deposits = [];
+    if (!jsonData.selections) jsonData.selections = [];
+    if (!jsonData.totalA) jsonData.totalA = 0;
+    if (!jsonData.totalB) jsonData.totalB = 0;
 
     const { phone, name, depositAmount, choice, type } = req.body;
 
@@ -71,33 +65,26 @@ app.post("/save-selection", async (req, res) => {
             return res.status(400).json({ error: "User has already deposited" });
         }
         jsonData.deposits.push({ phone, name, depositAmount, time: new Date().toISOString(), type });
-
-    } else if (type === "selection") {
-        if (jsonData.selections.some(s => s.phone === phone)) {
-            return res.status(400).json({ error: "User has already selected an option" });
-        }
-
+    } 
+    else if (type === "selection") {
         jsonData.selections.push({ phone, name, depositAmount, choice, time: new Date().toISOString(), type });
 
         if (choice === "A") jsonData.totalA += depositAmount;
         else if (choice === "B") jsonData.totalB += depositAmount;
-
-    } else {
+    } 
+    else {
         return res.status(400).json({ error: "Invalid type" });
     }
 
-    await saveData(jsonData);
+    saveData(jsonData);
     res.json({ success: true, message: "Data saved successfully!" });
 });
 
-// Route to get the total deposits for A and B
-app.get("/total-deposits", async (req, res) => {
-    let jsonData = await loadData();
+// Get total deposits for A & B (GET /total-deposits)
+app.get("/total-deposits", (req, res) => {
+    let jsonData = loadData();
     res.json({ totalA: jsonData.totalA, totalB: jsonData.totalB });
 });
 
-// Initialize data and start server
-initializeData().then(() => {
-    app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
-});
-
+// Start server
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
