@@ -11,19 +11,21 @@ const dataFilePath = path.join(backendDir, "data.json");
 
 app.use(cors());  // Enable CORS for frontend API calls
 app.use(express.json());
-app.use(express.static(path.join(backendDir, "public")));
+app.use(express.static(path.join(backendDir, "public")));  // Serve static files from public folder
 
+// Initialize data if not available
 const initializeData = async () => {
     try {
         await fs.access(dataFilePath);
         const data = await fs.readFile(dataFilePath, "utf8");
-        JSON.parse(data);
+        JSON.parse(data); // to check if the data is valid
     } catch {
         const defaultData = { deposits: [], selections: [], totalA: 0, totalB: 0 };
-        await fs.writeFile(dataFilePath, JSON.stringify(defaultData, null, 2));
+        await fs.writeFile(dataFilePath, JSON.stringify(defaultData, null, 2));  // Create default data file if it doesn't exist
     }
 };
 
+// Load the data from data.json
 const loadData = async () => {
     try {
         const data = await fs.readFile(dataFilePath, "utf8");
@@ -34,6 +36,7 @@ const loadData = async () => {
     }
 };
 
+// Save the updated data to data.json
 const saveData = async (jsonData) => {
     try {
         await fs.writeFile(dataFilePath, JSON.stringify(jsonData, null, 2));
@@ -42,11 +45,13 @@ const saveData = async (jsonData) => {
     }
 };
 
+// Route to get the data (deposits, selections, totalA, totalB)
 app.get("/data", async (req, res) => {
     const jsonData = await loadData();
     res.json(jsonData);
 });
 
+// Route to save selection or deposit data
 app.post("/save-selection", async (req, res) => {
     let jsonData = await loadData();
 
@@ -85,11 +90,13 @@ app.post("/save-selection", async (req, res) => {
     res.json({ success: true, message: "Data saved successfully!" });
 });
 
+// Route to get the total deposits for A and B
 app.get("/total-deposits", async (req, res) => {
     let jsonData = await loadData();
     res.json({ totalA: jsonData.totalA, totalB: jsonData.totalB });
 });
 
+// Initialize data and start server
 initializeData().then(() => {
     app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
 });
