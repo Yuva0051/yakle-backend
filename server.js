@@ -1,30 +1,29 @@
 const express = require("express");
-const fs = require("fs").promises;  // Use async file handling
+const cors = require("cors");
+const fs = require("fs").promises;  
 const path = require("path");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Define backend directory dynamically
 const backendDir = __dirname;
 const dataFilePath = path.join(backendDir, "data.json");
 
-// Middleware to parse JSON and serve static files
+app.use(cors());  // Enable CORS for frontend API calls
 app.use(express.json());
 app.use(express.static(path.join(backendDir, "public")));
 
-// Ensure `data.json` exists and has a valid structure
 const initializeData = async () => {
     try {
-        await fs.access(dataFilePath);  // Check if file exists
+        await fs.access(dataFilePath);
+        const data = await fs.readFile(dataFilePath, "utf8");
+        JSON.parse(data);
     } catch {
-        // If file does not exist, create it with default values
         const defaultData = { deposits: [], selections: [], totalA: 0, totalB: 0 };
         await fs.writeFile(dataFilePath, JSON.stringify(defaultData, null, 2));
     }
 };
 
-// Load JSON data safely
 const loadData = async () => {
     try {
         const data = await fs.readFile(dataFilePath, "utf8");
@@ -35,7 +34,6 @@ const loadData = async () => {
     }
 };
 
-// Save JSON data safely
 const saveData = async (jsonData) => {
     try {
         await fs.writeFile(dataFilePath, JSON.stringify(jsonData, null, 2));
@@ -44,13 +42,11 @@ const saveData = async (jsonData) => {
     }
 };
 
-// Get all data (GET /data)
 app.get("/data", async (req, res) => {
     const jsonData = await loadData();
     res.json(jsonData);
 });
 
-// Save deposit or selection (POST /save-selection)
 app.post("/save-selection", async (req, res) => {
     let jsonData = await loadData();
 
@@ -72,7 +68,6 @@ app.post("/save-selection", async (req, res) => {
         jsonData.deposits.push({ phone, name, depositAmount, time: new Date().toISOString(), type });
     } 
     else if (type === "selection") {
-        // Prevent duplicate selections
         if (jsonData.selections.some(s => s.phone === phone)) {
             return res.status(400).json({ error: "User has already selected an option" });
         }
@@ -90,14 +85,13 @@ app.post("/save-selection", async (req, res) => {
     res.json({ success: true, message: "Data saved successfully!" });
 });
 
-// Get total deposits for A & B (GET /total-deposits)
 app.get("/total-deposits", async (req, res) => {
     let jsonData = await loadData();
     res.json({ totalA: jsonData.totalA, totalB: jsonData.totalB });
 });
 
-// Start the server after ensuring data file exists
 initializeData().then(() => {
-    app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
+    app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
 });
+
 
