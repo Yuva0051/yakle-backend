@@ -1,12 +1,12 @@
 const express = require("express");
-const fs = require("fs");
+const fs = require("fs").promises;  // Use async file handling
 const path = require("path");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Define backend directory dynamically
-const backendDir = __dirname; // Works across all platforms
+const backendDir = __dirname;
 const dataFilePath = path.join(backendDir, "data.json");
 
 // Middleware to parse JSON and serve static files
@@ -14,17 +14,21 @@ app.use(express.json());
 app.use(express.static(path.join(backendDir, "public")));
 
 // Ensure `data.json` exists and has a valid structure
-if (!fs.existsSync(dataFilePath)) {
-    fs.writeFileSync(
-        dataFilePath,
-        JSON.stringify({ deposits: [], selections: [], totalA: 0, totalB: 0 }, null, 2)
-    );
-}
+const initializeData = async () => {
+    try {
+        await fs.access(dataFilePath);  // Check if file exists
+    } catch {
+        // If file does not exist, create it with default values
+        const defaultData = { deposits: [], selections: [], totalA: 0, totalB: 0 };
+        await fs.writeFile(dataFilePath, JSON.stringify(defaultData, null, 2));
+    }
+};
 
 // Load JSON data safely
-const loadData = () => {
+const loadData = async () => {
     try {
-        return JSON.parse(fs.readFileSync(dataFilePath, "utf8"));
+        const data = await fs.readFile(dataFilePath, "utf8");
+        return JSON.parse(data);
     } catch (error) {
         console.error("Error reading data.json:", error);
         return { deposits: [], selections: [], totalA: 0, totalB: 0 };
@@ -32,22 +36,23 @@ const loadData = () => {
 };
 
 // Save JSON data safely
-const saveData = (jsonData) => {
+const saveData = async (jsonData) => {
     try {
-        fs.writeFileSync(dataFilePath, JSON.stringify(jsonData, null, 2));
+        await fs.writeFile(dataFilePath, JSON.stringify(jsonData, null, 2));
     } catch (error) {
         console.error("Error writing to data.json:", error);
     }
 };
 
 // Get all data (GET /data)
-app.get("/data", (req, res) => {
-    res.json(loadData());
+app.get("/data", async (req, res) => {
+    const jsonData = await loadData();
+    res.json(jsonData);
 });
 
 // Save deposit or selection (POST /save-selection)
-app.post("/save-selection", (req, res) => {
-    let jsonData = loadData();
+app.post("/save-selection", async (req, res) => {
+    let jsonData = await loadData();
 
     if (!jsonData.deposits || !Array.isArray(jsonData.deposits)) jsonData.deposits = [];
     if (!jsonData.selections || !Array.isArray(jsonData.selections)) jsonData.selections = [];
@@ -67,6 +72,11 @@ app.post("/save-selection", (req, res) => {
         jsonData.deposits.push({ phone, name, depositAmount, time: new Date().toISOString(), type });
     } 
     else if (type === "selection") {
+        // Prevent duplicate selections
+        if (jsonData.selections.some(s => s.phone === phone)) {
+            return res.status(400).json({ error: "User has already selected an option" });
+        }
+
         jsonData.selections.push({ phone, name, depositAmount, choice, time: new Date().toISOString(), type });
 
         if (choice === "A") jsonData.totalA += depositAmount;
@@ -76,16 +86,18 @@ app.post("/save-selection", (req, res) => {
         return res.status(400).json({ error: "Invalid type" });
     }
 
-    saveData(jsonData);
+    await saveData(jsonData);
     res.json({ success: true, message: "Data saved successfully!" });
 });
 
 // Get total deposits for A & B (GET /total-deposits)
-app.get("/total-deposits", (req, res) => {
-    let jsonData = loadData();
+app.get("/total-deposits", async (req, res) => {
+    let jsonData = await loadData();
     res.json({ totalA: jsonData.totalA, totalB: jsonData.totalB });
 });
 
-// Start server
-app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
+// Start the server after ensuring data file exists
+initializeData().then(() => {
+    app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
+});
 
