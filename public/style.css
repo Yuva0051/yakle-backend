@@ -1,0 +1,569 @@
+ /* General Styling */
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(to right, #cc0000, #ffcc00);
+    color: white;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+/* Agree and Continue Box */
+.agree-box {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #111;
+    color: gold;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 0 25px gold;
+    z-index: 999;
+    border: 3px solid gold;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.agree-box button {
+    background: gold;
+    color: black;
+    padding: 12px 24px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.agree-box button:hover {
+    background: red;
+    color: white;
+}
+
+.hidden { display: none; }
+
+/* Title Styling */
+.title {
+    font-size: 60px;
+    font-family: 'Blacksmith', sans-serif;
+    color: gold;
+    text-shadow: 3px 3px 8px red;
+}
+
+.subtitle {
+    font-size: 35px;
+    font-weight: bold;
+    color: gold;
+    text-transform: uppercase;
+    text-shadow: 4px 4px 12px red, 0px 0px 25px gold;
+    animation: glowEffect 2s infinite alternate;
+}
+
+/* Glowing Effect Animation */
+@keyframes glowEffect {
+    0% { text-shadow: 4px 4px 12px red, 0px 0px 25px gold; }
+    100% { text-shadow: 6px 6px 20px red, 0px 0px 35px gold; }
+}
+
+/* Game Container */
+.game-container {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    margin-top: 30px;
+}
+
+.game-option {
+    text-align: center;
+    position: relative;
+}
+
+/* Player Images */
+.player-img {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background: white;
+    padding: 12px;
+    box-shadow: 0 0 18px gold;
+}
+
+/* Game Buttons */
+.game-btn {
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: red;
+    color: white;
+    font-size: 22px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0px 0px 12px gold;
+    transition: 0.3s;
+}
+
+.game-btn:hover {
+    background: gold;
+    color: black;
+}
+
+/* Deposit & Withdraw Buttons */
+.transaction-buttons {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.deposit-btn, .withdraw-btn {
+    background: linear-gradient(to right, gold, red);
+    color: white;
+    border: none;
+    padding: 14px 28px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 12px;
+    margin: 10px;
+    transition: 0.3s;
+}
+
+.deposit-btn:hover, .withdraw-btn:hover {
+    transform: scale(1.1);
+    background: linear-gradient(to right, red, gold);
+}
+
+/* Balance Container */
+.balance-container {
+    margin-top: 20px;
+    font-size: 26px;
+    font-weight: bold;
+    color: gold;
+    text-shadow: 3px 3px 12px red;
+}
+
+/* Popup Styles */
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #222;
+    color: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px gold;
+    z-index: 1000;
+    text-align: center;
+    display: none;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.popup-content input {
+    width: 85%;
+    padding: 12px;
+    margin: 10px 0;
+    font-size: 18px;
+    border-radius: 5px;
+}
+
+.popup-content button {
+    background: gold;
+    color: black;
+    padding: 12px 24px;
+    font-size: 18px;
+    border: none;
+    cursor: pointer;
+    margin: 5px;
+    border-radius: 6px;
+}
+
+.popup-content button:hover {
+    background: red;
+    color: white;
+}
+
+.closePopup {
+    background: red;
+    color: white;
+}
+
+/* Name Popup Styling */
+.name-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #111;
+    color: gold;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px gold;
+    z-index: 1000;
+    text-align: center;
+    display: none;
+    animation: fadeIn 0.5s ease-in-out;
+    border: 3px solid gold;
+}
+
+.name-popup input {
+    width: 80%;
+    padding: 12px;
+    margin: 10px 0;
+    font-size: 18px;
+    border-radius: 6px;
+    border: 2px solid gold;
+    background: #222;
+    color: white;
+    text-align: center;
+}
+
+.name-popup button {
+    background: gold;
+    color: black;
+    padding: 12px 24px;
+    font-size: 18px;
+    border: none;
+    cursor: pointer;
+    margin: 5px;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.name-popup button:hover {
+    background: red;
+    color: white;
+}
+
+/* UPI Payment Section */
+#upiSection {
+    text-align: center;
+    padding: 15px;
+    background: #222;
+    color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 15px gold;
+    margin-top: 15px;
+}
+
+#upiQR {
+    width: 200px;
+    height: 200px;
+    margin: 10px auto;
+    display: block;
+    border: 3px solid gold;
+    border-radius: 10px;
+}
+
+#openUPILink {
+    background: gold;
+    color: black;
+    padding: 12px 24px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+#openUPILink:hover {
+    background: red;
+    color: white;
+}
+
+#upiSection.hidden {
+    display: none;
+}
+
+/* Fade-in Animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translate(-50%, -55%); }
+    to { opacity: 1; transform: translate(-50%, -50%); }
+}
+/* Fix for white screen issue */
+body {
+    background: linear-gradient(to right, red, gold); /* Full-page reddish-gold */
+    margin: 0;
+    padding: 0;
+}
+
+/* Footer - Very Small */
+.footer {
+    background: linear-gradient(to right, red, gold);
+    color: black;
+    padding: 5px; /* Further reduced padding */
+    text-align: center;
+    font-size: 14px; /* Smaller text */
+    font-weight: bold;
+    box-shadow: 0 -3px 10px rgba(255, 215, 0, 0.6);
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    height: 50px; /* Smaller height */
+    line-height: 30px; /* Align text properly */
+    z-index: 1000;
+}
+
+/* Popup Overlay */
+#popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    z-index: 999;
+}
+
+/* Black and Gold Popup Style */
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: black;
+    color: #FFD700;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
+    text-align: center;
+    width: 80%;
+    max-width: 400px;
+    max-height: 60vh;
+    overflow-y: auto;
+    font-family: Arial, sans-serif;
+    z-index: 1001;
+}
+
+.popup h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.popup p {
+    font-size: 14px;
+}
+
+.popup .button-container {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 15px;
+}
+
+.popup button {
+    background: linear-gradient(45deg, #FFD700, #FFAA00);
+    color: black;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.popup button:hover {
+    background: linear-gradient(45deg, #FFAA00, #FFD700);
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.9);
+}
+
+.popup button:active {
+    transform: scale(0.95);
+}
+
+/* Hidden Class */
+.hidden {
+    display: none;
+}
+/* Ensure popups are hidden when closed */
+{
+    display: none;
+}
+/* Footer Visibility Fix */
+.footer {
+    position: relative;
+    width: 100%;
+    background: linear-gradient(to right, red, gold);
+    color: black;
+    padding: 10px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    box-shadow: 0 -3px 10px rgba(255, 215, 0, 0.6);
+    height: auto;
+    z-index: 1000;
+}
+
+/* Scrollable Disclaimer */
+.scrollable-disclaimer {
+    max-height: 100px; /* Adjust height as needed */
+    overflow-y: auto;
+    padding: 5px;
+    border-top: 2px solid gold;
+}
+
+.rights, .disclaimer {
+    margin: 5px 0;
+    padding: 0 10px;
+    font-size: 12px;
+    text-align: center;
+    color: black;
+}
+
+
+
+/* JavaScript to Hide Popups */
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll(".closePopup, .cancel-btn").forEach(button => {
+        button.addEventListener("click", function() {
+            this.closest(".popup, .agree-box, .name-popup").style.display = "none";
+        });
+    });
+});
+
+#selectionPopup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: black;
+    color: gold;
+    border: 2px solid gold;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    z-index: 1100; /* Ensure it is above other elements */
+    box-shadow: 0 0 15px gold;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Selection popup button styling */
+#selectionPopup button {
+    background: gold;
+    color: black;
+    padding: 10px 20px;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#selectionPopup button:hover {
+    background: red;
+    color: white;
+}
+#resultMessage {
+    color: white !important; /* Makes the text white */
+    font-size: 18px;
+    font-weight: bold;
+}
+.popup {
+    background-color: black;
+    color: gold;
+    border: 2px solid gold;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    max-width: 400px;
+    z-index: 9999;
+}
+
+.popup h2 {
+    color: gold;
+}
+
+.popup p {
+    font-size: 18px;
+    color: white;
+}
+
+.popup button {
+    background-color: gold;
+    color: black;
+    padding: 10px 20px;
+    font-weight: bold;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+/* Money Rain Effect */
+@keyframes moneyFall {
+    0% {
+        transform: translateY(-100px) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+.money {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 24px;
+    color: gold;
+    text-shadow: 2px 2px 5px black;
+    animation: moneyFall 3s linear infinite;
+    z-index: 9999;
+    pointer-events: none;
+}
+/* Mobile-Friendly Styles */
+@media (max-width: 768px) {
+    body {
+        font-size: 16px;
+        text-align: center;
+    }
+
+    .container {
+        width: 95%;
+        margin: 0 auto;
+        padding: 10px;
+    }
+
+    button {
+        width: 90%;
+        padding: 12px;
+        font-size: 16px;
+        margin: 5px auto;
+        display: block;
+    }
+
+    .popup {
+        width: 90%;
+        max-width: 400px;
+        padding: 15px;
+        font-size: 14px;
+    }
+
+    #balanceAmount, #totalDepositA, #totalDepositB {
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .money {
+        width: 30px !important;
+        height: auto;
+    }
+
+    .money img {
+        width: 100%;
+        height: auto;
+    }
+}

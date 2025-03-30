@@ -3,10 +3,10 @@ const fs = require("fs");
 const path = require("path");
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
-// Define backend directory and data file path
-const backendDir = "C:\\Users\\Yuva Ysr\\Music\\YB";
+// Define backend directory dynamically
+const backendDir = __dirname; // Works across all platforms
 const dataFilePath = path.join(backendDir, "data.json");
 
 // Middleware to parse JSON and serve static files
@@ -61,7 +61,6 @@ app.post("/save-selection", (req, res) => {
     }
 
     if (type === "deposit") {
-        // Prevent duplicate deposits for the same phone number
         if (jsonData.deposits.some(d => d.phone === phone)) {
             return res.status(400).json({ error: "User has already deposited" });
         }
@@ -70,7 +69,6 @@ app.post("/save-selection", (req, res) => {
     else if (type === "selection") {
         jsonData.selections.push({ phone, name, depositAmount, choice, time: new Date().toISOString(), type });
 
-        // Update total deposits in `data.json`
         if (choice === "A") jsonData.totalA += depositAmount;
         else if (choice === "B") jsonData.totalB += depositAmount;
     } 
@@ -90,8 +88,4 @@ app.get("/total-deposits", (req, res) => {
 
 // Start server
 app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
-
-
-
-
 

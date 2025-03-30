@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yakle - Tap and Earn</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <!-- Agree and Continue Box -->
+    <div id="agreeBox" class="agree-box">
+        <h2>Terms & Conditions</h2>
+        <p>This game is played at your own risk. We are not responsible for any losses. 
+        By continuing, you accept our terms and conditions under Indian law.</p>
+        <label>
+            <input type="checkbox" id="agreeCheckbox"> I Agree to the Terms
+        </label>
+        <button id="continueBtn">Agree and Continue</button>
+    </div>
+
+    <!-- Main Content -->
+    <div id="mainContent" class="hidden">
+        <h1 class="title">YAKLE</h1>
+        <h2 class="subtitle">Tap and Earn</h2>
+
+        <!-- Game Selection -->
+        <div class="game-container">
+            <div class="game-option">
+                <img src="virat.png" alt="Virat" class="player-img">
+                <button class="game-btn" id="btnA" onclick="selectGame('A')">A</button>
+            </div>
+            <div class="game-option">
+                <img src="dhoni.png" alt="Dhoni" class="player-img">
+                <button class="game-btn" id="btnB" onclick="selectGame('B')">B</button>
+            </div>
+        </div>
+
+        <!-- Balance Display -->
+        <div class="balance-container">
+            <h2>Your Balance: ₹<span id="balanceAmount">0</span></h2>
+        </div>
+
+        <!-- Bold Golden Text -->
+        <div class="question-container">
+            <h3 class="gold-text">Who will be the Captain of the 2027 Cricket World Cup?</h3>
+        </div>
+
+        <!-- Deposit & Withdraw Buttons -->
+        <div class="buttons">
+            <button id="depositBtn" class="deposit-btn">Deposit</button>
+            <button id="withdrawBtn" class="withdraw-btn">Withdraw</button>
+        </div>
+    </div>
+    
+    <!-- Name Popup -->
+    <div id="namePopup" class="popup hidden">
+        <div class="popup-content">
+            <h2>Enter Your Full Name</h2>
+            <input type="text" id="userName" placeholder="Enter your name as per Bank">
+            <button id="confirmName" onclick="setUserName()">Continue</button>
+            <button class="closePopup" onclick="closePopup('namePopup')">Close</button>
+        </div>
+    </div>
+
+    <!-- Phone Number Popup -->
+    <div id="phonePopup" class="popup hidden">
+        <div class="popup-content">
+            <h2>Enter Phone Number</h2>
+            <input type="tel" id="phoneNumber" placeholder="Enter your phone number" maxlength="10">
+            <button id="continuePhone" onclick="setPhoneNumber()">Continue</button>
+            <button class="closePopup" onclick="closePopup('phonePopup')">Close</button>
+        </div>
+    </div>
+
+    <!-- Deposit Popup -->
+    <div id="depositPopup" class="popup hidden">
+        <div class="popup-content">
+            <h2>Deposit Money</h2>
+            <input type="number" id="depositAmount" placeholder="Enter amount (₹10 - ₹500)" min="10" max="500">
+            <button id="confirmDeposit" onclick="confirmDeposit()">Deposit</button>
+            <button class="closePopup" onclick="closePopup('depositPopup')">Close</button>
+        </div>
+    </div>
+
+    <!-- Withdraw Popup -->
+    <div id="withdrawPopup" class="popup hidden">
+        <div class="popup-content">
+            <h2>Withdraw Money</h2>
+            <input type="number" id="withdrawAmount" placeholder="Enter amount">
+            <button id="confirmWithdraw" onclick="confirmWithdraw()">Withdraw</button>
+            <button class="closePopup" onclick="closePopup('withdrawPopup')">Close</button>
+        </div>
+    </div>
+    
+     <!-- UPI Payment Section -->
+    <div id="upiSection" class="popup hidden">
+        <div class="popup-content">
+            <h3>Pay via UPI</h3>
+            <img id="upiQR" src="upi_qr.png" alt="UPI QR Code" style="width: 200px; height: 200px; margin: 10px auto; display: block;">
+            <p>Or pay manually to: <strong>7449113378@mbk</strong></p>
+            <a id="openUPILink" href="#" target="_blank">Pay Now</a>
+            <p id="upiStatus" style="font-weight: bold; color: red; display: none;"> Payment Processing... Please wait (60s)</p>
+            <p id="timerDisplay" style="font-size: 20px; font-weight: bold; color: green; display: none;"></p>
+        </div>
+    </div>
+
+    <!-- Selection Confirmation Popup -->
+    <div id="selectionPopup" class="popup hidden">
+        <div class="popup-content" style="background-color: black; color: gold; border: 2px solid gold; padding: 20px; border-radius: 10px; text-align: center;">
+            <h2>⚠ Confirm Your Choice ⚠</h2>
+            <p style="color: red; font-weight: bold;">❗ Only deposited real money users can play. Others are strictly prohibited. ⚠ Warning: Do Not Close or Refresh The Tab ⚠❗</p>
+            <p style="font-size: 14px;">Once confirmed, you cannot change your selection.</p>
+            <p id="selectedOption" style="font-size: 16px; font-weight: bold; color: gold;">Selected Option: -</p>
+            <button id="confirmSelection" style="background-color: gold; color: black; padding: 10px 20px; font-weight: bold; border-radius: 5px;">Confirm</button>
+            <button id="cancelSelection" style="background-color: red; color: white; padding: 10px 20px; font-weight: bold; border-radius: 5px;">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p><a href="#" onclick="openPopup('privacyPolicy')">Privacy Policy</a> | 
+        <a href="#" onclick="openPopup('termsConditions')">Terms & Conditions</a> | 
+        <a href="#" onclick="openPopup('cancellationRefund')">Cancellation & Refund</a> | 
+        <a href="mailto:yuvaysr00@gmail.com">Contact Us</a></p>
+        <p class="rights">© 2025 Yakle. All Rights Reserved.</p>
+        <p class="disclaimer">This is a <strong>skill-based</strong> game and does not fall under gambling laws. It is legal under the <strong>Public Gambling Act, 1867</strong> in India.</p>
+    </footer>
+
+    <!-- Popup Modals -->
+    <div id="privacyPolicy" class="popup hidden">
+        <div class="popup-content">
+            <span class="close" onclick="closePopup('privacyPolicy')">&times;</span>
+            <h2>Privacy Policy</h2>
+            <p>We collect user information to enhance your experience. We do not share your data with third parties. Your personal details are protected, and financial transactions are secured. By using our services, you agree to our Privacy Policy.</p>
+        </div>
+    </div>
+
+    <div id="termsConditions" class="popup hidden">
+        <div class="popup-content">
+            <span class="close" onclick="closePopup('termsConditions')">&times;</span>
+            <h2>Terms & Conditions</h2>
+            <p>By using our platform, you agree to deposit and participate at your own risk. We are not responsible for losses. The game results are based on fair calculations. The admin's decision is final, and no disputes will be entertained. Deposits made between 8:00 PM and 11:59 PM will not be considered. If you **refresh the tab**, your data will be **erased**, so please **play carefully**."</p>
+            <p><strong>Legal Disclaimer:</strong> This game is a <strong>skill-based</strong> competition and is not considered gambling. It is legally permitted under the <strong>Public Gambling Act, 1867</strong> in India.</p>
+        </div>
+    </div>
+
+    <div id="cancellationRefund" class="popup hidden">
+        <div class="popup-content">
+            <span class="close" onclick="closePopup('cancellationRefund')">&times;</span>
+            <h2>Cancellation & Refund</h2>
+            <p>Deposits made on this platform are final. No cancellation or refunds are provided once the game is entered. Please play responsibly.</p>
+        </div>
+    </div>
+
+    <div id="popup-overlay" class="hidden"></div>
+
+    <script>
+        function openPopup(popupId) {
+            document.getElementById(popupId).style.display = "block";
+            document.getElementById("popup-overlay").style.display = "block";
+        }
+
+        function closePopup(popupId) {
+            document.getElementById(popupId).style.display = "none";
+            document.getElementById("popup-overlay").style.display = "none";
+        }
+
+        function selectGame(option) {
+            document.getElementById("selectedOption").textContent = "Selected Option: " + option;
+            document.getElementById("selectionPopup").style.display = "block";
+        }
+    </script>
+</body>
+</html>
